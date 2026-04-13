@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+*.egg-info/
+dist/
+
+# uv
+.uv/
+
+# Environment
+.env
+*.env
+SECRET/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+
+
+# Lambda build artifacts
+lambdas/**/*.zip
+lambdas/**/package/
+
+# AWS
+.aws-sam/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Lambda build output
+lambdas/**/dist/
