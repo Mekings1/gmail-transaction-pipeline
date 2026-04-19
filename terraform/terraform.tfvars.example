@@ -1,0 +1,7 @@
+aws_region        = "af-south-1"
+project_name      = "gmail-txn-pipeline-demo"
+environment       = "prod"
+bank_email_sender = "alerts@yourbank.ng"
+gmail_login_keywords = "Login Notification" #Key words for mails I want to delete for me was login notifications
+google_project_id = "your-gcp-project-id"
+pubsub_topic_name = "gmail-transactions"
