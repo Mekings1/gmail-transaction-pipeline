@@ -57,7 +57,7 @@ flowchart TB
 | API layer | Amazon API Gateway HTTP API |
 | Raw storage | Amazon S3 (lifecycle tiering to Glacier) |
 | Structured storage | Amazon DynamoDB (serverless, PAY_PER_REQUEST) |
-| Secrets | AWS Secrets Manager + SSM Parameter Store |
+| Secrets | SSM Parameter Store |
 | Observability | Amazon CloudWatch Logs |
 | Dashboard | Serverless HTML + Chart.js served by Lambda |
 
@@ -67,7 +67,7 @@ flowchart TB
 
 ### Stage 1 — Ingestion Lambda
 Triggered by a Pub/Sub push from Gmail. Loads OAuth credentials from
-Secrets Manager, calls the Gmail History API to fetch new messages,
+SSM parameter store, calls the Gmail History API to fetch new messages,
 classifies each email, writes raw JSON to S3, and marks transactions
 as read.
 
