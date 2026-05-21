@@ -51,9 +51,14 @@ API_DELAY_SECONDS = 0.15
 
 # ── Auth ──────────────────────────────────────────────────────────────────────
 
+_ssm = boto3.client("ssm")
+
 def load_credentials() -> Credentials:
-    sm     = boto3.client("secretsmanager", region_name=AWS_REGION)
-    secret = json.loads(sm.get_secret_value(SecretId=SECRET_NAME)["SecretString"])
+    resp   = _ssm.get_parameter(
+        Name="/gmail-txn/prod/oauth-credentials",
+        WithDecryption=True,
+    )
+    secret = json.loads(resp["Parameter"]["Value"])
     creds  = Credentials(
         token=None,
         refresh_token=secret["refresh_token"],

@@ -10,3 +10,16 @@ resource "aws_ssm_parameter" "history_id" {
 
   tags = local.common_tags
 }
+
+resource "aws_ssm_parameter" "oauth_credentials" {
+  name        = "/gmail-txn/prod/oauth-credentials"
+  description = "Gmail OAuth credentials for ingestion Lambda"
+  type        = "SecureString"
+  value       = "{}"   # placeholder — gmail_watch.py writes the real value
+
+  lifecycle {
+    ignore_changes = [value]
+  }
+
+  tags = local.common_tags
+}

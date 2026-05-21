@@ -50,10 +50,14 @@ _ssm     = boto3.client("ssm")
 
 # ── Credentials ───────────────────────────────────────────────────────────────
 
+_ssm = boto3.client("ssm")
+
 def load_credentials() -> Credentials:
-    """Load OAuth credentials from Secrets Manager. No historyId here."""
-    raw    = _secrets.get_secret_value(SecretId=SECRET_NAME)
-    secret = json.loads(raw["SecretString"])
+    resp   = _ssm.get_parameter(
+        Name="/gmail-txn/prod/oauth-credentials",
+        WithDecryption=True,
+    )
+    secret = json.loads(resp["Parameter"]["Value"])
     creds  = Credentials(
         token=None,
         refresh_token=secret["refresh_token"],
@@ -63,7 +67,6 @@ def load_credentials() -> Credentials:
         scopes=["https://www.googleapis.com/auth/gmail.modify"],
     )
     creds.refresh(Request())
-    logger.info("OAuth credentials refreshed")
     return creds
 
 

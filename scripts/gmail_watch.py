@@ -73,27 +73,30 @@ def register_gmail_watch(creds):
     return response
 
 
-def store_credentials_in_secrets_manager(creds, watch_result):
-    """Store OAuth credentials only — no historyId."""
-    client = boto3.client("secretsmanager", region_name=AWS_REGION)
+def store_credentials_in_ssm(creds, watch_result):
+    ssm = boto3.client("ssm", region_name=AWS_REGION)
 
-    secret_value = json.dumps({
-        "client_id":    creds.client_id,
-        "client_secret": creds.client_secret,
-        "refresh_token": creds.refresh_token,
-        "token_uri":    "https://oauth2.googleapis.com/token",
-    })
+    # Store OAuth credentials as a single SecureString parameter
+    ssm.put_parameter(
+        Name="/gmail-txn/prod/oauth-credentials",
+        Value=json.dumps({
+            "client_id":     creds.client_id,
+            "client_secret": creds.client_secret,
+            "refresh_token": creds.refresh_token,
+            "token_uri":     "https://oauth2.googleapis.com/token",
+        }),
+        Type="SecureString",
+        Overwrite=True,
+    )
+    print("✓ OAuth credentials stored in SSM")
 
-    try:
-        client.create_secret(
-            Name=SECRET_NAME,
-            Description="Gmail OAuth credentials — gmail-transaction-pipeline",
-            SecretString=secret_value,
-        )
-        print(f"✓ Secret created : {SECRET_NAME}")
-    except client.exceptions.ResourceExistsException:
-        client.put_secret_value(SecretId=SECRET_NAME, SecretString=secret_value)
-        print(f"✓ Secret updated : {SECRET_NAME}")
+    ssm.put_parameter(
+        Name="/gmail-txn/prod/history-id",
+        Value=str(watch_result["historyId"]),
+        Type="String",
+        Overwrite=True,
+    )
+    print(f"✓ historyId stored in SSM: {watch_result['historyId']}")
 
 
 def store_history_id_in_ssm(watch_result):
@@ -112,6 +115,6 @@ if __name__ == "__main__":
     print("\n── Gmail Transaction Pipeline — One-time Setup ──\n")
     creds = run_oauth_flow()
     watch = register_gmail_watch(creds)
-    store_credentials_in_secrets_manager(creds, watch)
+    store_credentials_in_ssm(creds, watch)
     store_history_id_in_ssm(watch)
     print("\n✓ All done.\n")

@@ -31,13 +31,10 @@ resource "aws_iam_role_policy" "ingestion" {
         Resource = "arn:aws:logs:${var.aws_region}:${local.account_id}:log-group:/aws/lambda/${local.name_prefix}-ingestion:*"
       },
       {
-        Sid    = "ReadWriteSecret"
+        Sid    = "ReadSSMParameters"
         Effect = "Allow"
-        Action = [
-          "secretsmanager:GetSecretValue",
-          "secretsmanager:PutSecretValue"
-        ]
-        Resource = "arn:aws:secretsmanager:${var.aws_region}:${local.account_id}:secret:gmail-txn/oauth-credentials*"
+        Action = ["ssm:GetParameter", "ssm:PutParameter"]
+        Resource = "arn:aws:ssm:${var.aws_region}:${local.account_id}:parameter/gmail-txn/*"
       },
       {
         Sid    = "HistoryIdState"

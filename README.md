@@ -178,9 +178,8 @@ For personal transaction volumes (< 500 emails/month):
 | API Gateway | Free (well within 1M free requests/month) |
 | S3 | ~$0.01/month |
 | DynamoDB | Free (within free tier permanently) |
-| Secrets Manager | ~$0.40/month per secret |
 | SSM Parameter Store | Free (standard parameters) |
-| **Total** | **~$0.41/month** |
+| **Total** | **~$0.01/month** |
 
 ---
 
